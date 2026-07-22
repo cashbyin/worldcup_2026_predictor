@@ -15,8 +15,7 @@ Welcome to the FIFA World Cup 2026 Prediction Platform.
 Use the navigation menu on the left to:
 
 - ⚽ Predict individual matches
-- 🏆 Simulate a tournament
-- 📊 Run Monte Carlo simulations
+- 🏆 Simulate the tournament and get a winner prediction
 - 🤖 Explore model insights
 """
 )

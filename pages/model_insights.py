@@ -1,11 +1,12 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
 
-from src.streamlit_utils import load_predictor
+from src.streamlit_utils import load_predictor, _get_model_version
 
-predictor = load_predictor()
+predictor = load_predictor(_get_model_version())
 
 st.title("🤖 Model Insights")
 
@@ -54,7 +55,6 @@ if predictor.evaluation_results:
     cm = predictor.evaluation_results["confusion_matrix"]
 
     # Convert to numpy array if it's a list (from loaded JSON)
-    import numpy as np
     if isinstance(cm, list):
         cm = np.array(cm)
 

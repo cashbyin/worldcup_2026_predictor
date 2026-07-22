@@ -1,33 +1,55 @@
 import streamlit as st
+import pandas as pd
+import plotly.express as px
 
-from src.streamlit_utils import load_predictor
+from src.streamlit_utils import load_predictor, _get_model_version
 
-predictor = load_predictor()
+predictor = load_predictor(_get_model_version())
 
-st.title(
-    "🏆 Tournament Simulator"
-)
+st.title("🏆 Tournament Simulator")
 
-if st.button(
-    "Simulate Tournament"
-):
+if "sim_results" not in st.session_state:
+    st.session_state.sim_results = None
 
-    predictor.load_2026_teams()
+if st.button("Simulate Tournament"):
 
-    for group in predictor.groups:
+    with st.spinner("Running simulations..."):
 
-        predictor.simulate_group(group)
+        predictor.load_2026_teams()
 
-    qualifiers = (
-        predictor.get_group_qualifiers()
-    )
+        for group in predictor.groups:
+            predictor.simulate_group(group)
 
-    result = (
-        predictor.simulate_tournament(
-            qualifiers
+        qualifiers = predictor.get_group_qualifiers()
+
+        mc = predictor.run_many_simulations(
+            qualifiers,
+            n_simulations=2000
         )
-    )
+
+    st.session_state.sim_results = mc
+
+if st.session_state.sim_results is not None:
+
+    mc = st.session_state.sim_results
+    champion = mc["probabilities"][0]
 
     st.success(
-        f'Champion: {result["champion"]}'
+        f'Champion: {champion["team"]} — {champion["probability"]}% probability'
     )
+
+    st.subheader("Top Contenders")
+
+    df = pd.DataFrame(mc["probabilities"]).head(6)
+    df.columns = ["Team", "Wins", "Probability (%)"]
+
+    fig = px.pie(
+        df,
+        names="Team",
+        values="Probability (%)",
+        hole=0.3,
+    )
+    fig.update_traces(textposition="inside", textinfo="label+percent")
+    fig.update_layout(showlegend=True)
+
+    st.plotly_chart(fig, use_container_width=True)

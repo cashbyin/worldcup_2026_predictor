@@ -86,9 +86,20 @@ class WorldCupPredictor:
 
     # 1. Load the data and confirm
     def load_data(self,matches_path,teams_path,tournaments_path):
-        self.df_matches = pd.read_csv(matches_path)
-        self.df_teams = pd.read_csv(teams_path)
-        self.df_tournaments = pd.read_csv(tournaments_path)
+        if isinstance(matches_path, pd.DataFrame):
+            self.df_matches = matches_path
+        else:
+            self.df_matches = pd.read_csv(matches_path)
+
+        if isinstance(teams_path, pd.DataFrame):
+            self.df_teams = teams_path
+        else:
+            self.df_teams = pd.read_csv(teams_path)
+
+        if isinstance(tournaments_path, pd.DataFrame):
+            self.df_tournaments = tournaments_path
+        else:
+            self.df_tournaments = pd.read_csv(tournaments_path)
 
 
         print("Data loaded successfully")
@@ -2472,14 +2483,18 @@ class WorldCupPredictor:
         return fig
 
     # Load the saved model
-    def load_saved_model(self, model_dir="models/worldcup_predictor"):
+    def load_saved_model(self, model_dir=None):
         import json
         import pickle
         from pathlib import Path
 
         from catboost import CatBoostClassifier
 
-        model_dir = Path(model_dir)
+        if model_dir is None:
+            project_root = Path(__file__).resolve().parent.parent
+            model_dir = project_root / "models" / "worldcup_predictor"
+        else:
+            model_dir = Path(model_dir)
 
         # -----------------------
         # Model

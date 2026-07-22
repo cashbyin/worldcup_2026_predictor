@@ -3,7 +3,6 @@
 .venv/
 env/
 venv/
-models/
 # Virtual environment and dependencies
 .env
 .env.local
@@ -55,15 +54,6 @@ coverage.xml
 .tox/
 .hypothesis/
 
-# CatBoost training artifacts
-catboost_info/
-*.cbm
-
-# Model artifacts and cache
-models/worldcup_predictor/
-*.pkl
-*.pickle
-*.joblib
 
 # Data files
 data/raw/*.csv

@@ -24,7 +24,7 @@ if st.button("Simulate Tournament"):
 
         mc = predictor.run_many_simulations(
             qualifiers,
-            n_simulations=8000
+            n_simulations=2000
         )
 
     st.session_state.sim_results = mc
